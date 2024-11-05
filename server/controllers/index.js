@@ -3,6 +3,7 @@ const models = require('../models');
 
 // get the Cat model
 const { Cat } = models;
+const { Dog } = models;
 
 // Function to handle rendering the index page.
 const hostIndex = async (req, res) => {
@@ -283,6 +284,36 @@ const notFound = (req, res) => {
   });
 };
 
+const dogName = async (req, res) => {
+  if (!req.body.name || !req.body.breed || !req.body.age) {
+    return res.status(400).json({ error: 'name, breed, and age are all required' });
+  }
+
+  
+  const dogData = {
+    name: `${req.body.name}`,
+    breed: ` ${req.body.breed}`,
+    age: req.body.age,
+  };
+
+  
+  const newDog = new Dog(dogData);
+
+  
+  try {
+    
+    await newDog.save();
+    return res.status(201).json({
+      name: newDog.name,
+      breed: newDog.breed,
+      age: newDog.age,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'failed to create dog' });
+  }
+};
+
 // export the relevant public controller functions
 module.exports = {
   index: hostIndex,
@@ -294,4 +325,5 @@ module.exports = {
   updateLast,
   searchName,
   notFound,
+  dogName,
 };
