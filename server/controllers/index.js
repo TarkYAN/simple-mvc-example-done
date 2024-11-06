@@ -330,29 +330,25 @@ const dogName = async (req, res) => {
 };
 
 const findDog = async (req, res) => {
-  // Check if the 'name' query parameter is provided.
   if (!req.query.name) {
     console.log('Name query parameter is missing.');
     return res.status(400).json({ error: 'Name is required to perform a search' });
   }
 
   try {
-    // Attempt to find and update the dog's age by 1.
     const updatedDog = await Dog.findOneAndUpdate(
-      { name: req.query.name }, // Search by the dog's name
-      { $inc: { age: 1 } },      // Increment the age by 1
-      { new: true }              // Return the updated document
+      { name: req.query.name }, 
+      { $inc: { age: 1 } },   
+      { new: true }            
     ).exec();
 
-    // If no dog is found, return a 404 error.
+
     if (!updatedDog) {
       return res.status(404).json({ error: 'No dogs found' });
     }
 
-    // Return the updated dog information.
     return res.json({ name: updatedDog.name, breed: updatedDog.breed, age: updatedDog.age });
   } catch (err) {
-    // Handle any errors during the update.
     console.log(err);
     return res.status(500).json({ error: 'Something went wrong' });
   }
